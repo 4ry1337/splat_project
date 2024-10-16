@@ -1,4 +1,4 @@
 # SPLAT prgramming language for SEDS501/701
 
-> [warn]
+> [!warning]
 > Do not copy following code for assignment
