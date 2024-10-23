@@ -1,11 +1,11 @@
-package splat.parser.elements;
+package splat.parser.elements.expressions;
 
 import splat.lexer.Token;
+import splat.parser.elements.ASTElement;
 
 public abstract class Expression extends ASTElement {
-
-	public Expression(Token tok) {
-		super(tok);
+	public Expression(Token token) {
+		super(token);
 	}
 
 	/**

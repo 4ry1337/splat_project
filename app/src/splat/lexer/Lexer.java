@@ -5,37 +5,14 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+
+import splat.Utils;
 
 public class Lexer {
-  private static final Map<String, TokenType> keywords = new HashMap<>();
-
-  static {
-    keywords.put("program", TokenType.PROGRAM);
-    keywords.put("begin", TokenType.BEGIN);
-    keywords.put("end", TokenType.END);
-    keywords.put("and", TokenType.AND);
-    keywords.put("or", TokenType.OR);
-    keywords.put("not", TokenType.NOT);
-    keywords.put("String", TokenType.STRING);
-    keywords.put("Integer", TokenType.INTEGER);
-    keywords.put("Boolean", TokenType.BOOLEAN);
-    keywords.put("true", TokenType.TRUE);
-    keywords.put("false", TokenType.FALSE);
-    keywords.put("void", TokenType.VOID);
-    keywords.put("is", TokenType.IS);
-    keywords.put("while", TokenType.WHILE);
-    keywords.put("do", TokenType.DO);
-    keywords.put("if", TokenType.IF);
-    keywords.put("then", TokenType.THEN);
-    keywords.put("else", TokenType.ELSE);
-    keywords.put("print", TokenType.PRINT);
-    keywords.put("print_line", TokenType.PRINT_LINE);
-    keywords.put("return", TokenType.RETURN);
-  }
-
   private final File file;
   private final List<Token> tokens;
 
@@ -68,57 +45,57 @@ public class Lexer {
             line++;
             break;
           case '+':
-            tokens.add(new Token(source.substring(start_id, curr_id), TokenType.PLUS, null, line, column));
+            tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
             column++;
             break;
           case '-':
-            tokens.add(new Token(source.substring(start_id, curr_id), TokenType.MINUS, null, line, column));
+            tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
             column++;
             break;
           case '*':
-            tokens.add(new Token(source.substring(start_id, curr_id), TokenType.STAR, null, line, column));
+            tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
             column++;
             break;
           case '/':
-            tokens.add(new Token(source.substring(start_id, curr_id), TokenType.SLASH, null, line, column));
+            tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
             column++;
             break;
           case '%':
-            tokens.add(new Token(source.substring(start_id, curr_id), TokenType.MOD, null, line, column));
+            tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
             column++;
             break;
           case '(':
-            tokens.add(new Token(source.substring(start_id, curr_id), TokenType.LEFT_PAREN, null, line, column));
+            tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
             column++;
             break;
           case ')':
-            tokens.add(new Token(source.substring(start_id, curr_id), TokenType.RIGHT_PAREN, null, line, column));
+            tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
             column++;
             break;
           case ',':
-            tokens.add(new Token(source.substring(start_id, curr_id), TokenType.COMMA, null, line, column));
+            tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
             column++;
             break;
           case '.':
-            tokens.add(new Token(source.substring(start_id, curr_id), TokenType.DOT, null, line, column));
+            tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
             column++;
             break;
           case ';':
-            tokens.add(new Token(source.substring(start_id, curr_id), TokenType.SEMICOLON, null, line, column));
+            tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
             column++;
             break;
           case ':':
             if (curr_id < source.length() && source.charAt(curr_id) == '=') {
-              tokens.add(new Token(source.substring(start_id, ++curr_id), TokenType.ASSIGNMENT, null, line, column));
+              tokens.add(new Token(source.substring(start_id, ++curr_id), null, line, column));
               column += 2;
             } else {
-              tokens.add(new Token(source.substring(start_id, curr_id), TokenType.COLON, null, line, column));
+              tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
               column++;
             }
             break;
           case '=':
             if (curr_id < source.length() && source.charAt(curr_id) == '=') {
-              tokens.add(new Token(source.substring(start_id, ++curr_id), TokenType.EQUAL, null, line, column));
+              tokens.add(new Token(source.substring(start_id, ++curr_id), null, line, column));
               column += 2;
             } else {
               throw new LexException("Invalid symbol", line, column);
@@ -126,19 +103,19 @@ public class Lexer {
             break;
           case '>':
             if (curr_id < source.length() && source.charAt(curr_id) == '=') {
-              tokens.add(new Token(source.substring(start_id, ++curr_id), TokenType.GREATER_EQUAL, null, line, column));
+              tokens.add(new Token(source.substring(start_id, ++curr_id), null, line, column));
               column += 2;
             } else {
-              tokens.add(new Token(source.substring(start_id, curr_id), TokenType.GREATER, null, line, column));
+              tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
               column++;
             }
             break;
           case '<':
             if (curr_id < source.length() && source.charAt(curr_id) == '=') {
-              tokens.add(new Token(source.substring(start_id, ++curr_id), TokenType.LESS_EQUAL, null, line, column));
+              tokens.add(new Token(source.substring(start_id, ++curr_id), null, line, column));
               column += 2;
             } else {
-              tokens.add(new Token(source.substring(start_id, curr_id), TokenType.LESS, null, line, column));
+              tokens.add(new Token(source.substring(start_id, curr_id), null, line, column));
             }
             break;
           case '"':
@@ -152,7 +129,7 @@ public class Lexer {
               throw new LexException("Unterminated string 2", line, column);
             }
             curr_id++;
-            tokens.add(new Token(source.substring(start_id, curr_id), TokenType.STRING,
+            tokens.add(new Token(source.substring(start_id, curr_id),
                 source.substring(start_id + 1, curr_id - 1), line, column));
             column += curr_id - start_id;
             break;
@@ -161,7 +138,7 @@ public class Lexer {
               while (curr_id < source.length() && isDigit(source.charAt(curr_id))) {
                 curr_id++;
               }
-              tokens.add(new Token(source.substring(start_id, curr_id), TokenType.INTEGER,
+              tokens.add(new Token(source.substring(start_id, curr_id),
                   source.substring(start_id, curr_id), line, column));
               column += curr_id - start_id;
             } else if (isAlpha(ch)) {
@@ -169,8 +146,11 @@ public class Lexer {
                 curr_id++;
               }
               String lexeme = source.substring(start_id, curr_id);
-              TokenType type = keywords.getOrDefault(lexeme, TokenType.LABEL);
-              tokens.add(new Token(lexeme, type, lexeme, line, column));
+              if (Utils.isKeyword(lexeme)) {
+                tokens.add(new Token(lexeme, lexeme, line, column));
+              } else {
+                tokens.add(new Token(lexeme, null, line, column));
+              }
               column += curr_id - start_id;
             } else {
               throw new LexException("Invalid character: '" + ch + "'", line, column);
@@ -180,6 +160,10 @@ public class Lexer {
     } catch (IOException e) {
       throw new LexException(e.getMessage(), 0, 0);
     }
+
+    // for (Token token : tokens) {
+    // System.out.println(token);
+    // }
 
     return tokens;
   }

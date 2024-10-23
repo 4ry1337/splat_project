@@ -5,13 +5,11 @@ public class Token {
   private final Object value;
   private final int line;
   private final int column;
-  private final TokenType type;
 
-  public Token(String lexeme, TokenType type, Object value, int line, int column) {
+  public Token(String lexeme, Object value, int line, int column) {
     this.lexeme = lexeme;
     this.line = line;
     this.column = column;
-    this.type = type;
     this.value = value;
   }
 
@@ -27,17 +25,13 @@ public class Token {
     return column;
   }
 
-  public TokenType getType() {
-    return type;
-  }
-
   public Object getValue() {
     return value;
   }
 
   @Override
   public String toString() {
-    return "Token = { lexeme=" + lexeme + ", line=" + line + ", column=" + column + ", type=" + type + ", value="
+    return "Token = { lexeme=" + lexeme + ", line=" + line + ", column=" + column + ", value="
         + value + " }";
   }
 }

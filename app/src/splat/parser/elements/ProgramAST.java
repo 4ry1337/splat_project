@@ -2,7 +2,10 @@ package splat.parser.elements;
 
 import java.util.List;
 
-import splat.lexer.Token;
+import splat.lexer.*;
+import splat.parser.elements.declarations.*;
+import splat.parser.elements.expressions.*;
+import splat.parser.elements.statements.*;
 
 public class ProgramAST extends ASTElement {
 	private List<Declaration> declarations;
@@ -22,17 +25,17 @@ public class ProgramAST extends ASTElement {
 		return statements;
 	}
 
+	@Override
 	public String toString() {
-		String result = "program \n";
+		String result = "program\n";
 		for (Declaration decl : declarations) {
-			result = result + "   " + decl + "\n";
+			result += "   " + decl + "\n";
 		}
-		result = result + "begin \n";
+		result += "begin \n";
 		for (Statement stmt : statements) {
-			result = result + "   " + stmt + "\n";
+			result += "   " + stmt + "\n";
 		}
-		result = result + "end;";
-
+		result += "end;";
 		return result;
 	}
 }

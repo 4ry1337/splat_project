@@ -1,6 +1,7 @@
-package splat.parser.elements;
+package splat.parser.elements.declarations;
 
 import splat.lexer.Token;
+import splat.parser.elements.ASTElement;
 
 public abstract class Declaration extends ASTElement {
 	public Declaration(Token token) {
