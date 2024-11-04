@@ -1,27 +1,27 @@
 package splat.parser.elements.declarations;
 
-import splat.Utils;
 import splat.lexer.Token;
+import splat.parser.elements.Type;
 
 public class Parameter {
-	private String label;
-	private String type;
+  private String label;
+  private Type type;
 
-	public Parameter(Token labelToken, String type) {
-		this.label = labelToken.getLexeme();
-		this.type = type;
-	}
+  public Parameter(Token labelToken, Type type) {
+    this.label = labelToken.getLexeme();
+    this.type = type;
+  }
 
-	public String getName() {
-		return label;
-	}
+  public String getLabel() {
+    return label;
+  }
 
-	public String getType() {
-		return type;
-	}
+  public Type getType() {
+    return type;
+  }
 
-	@Override
-	public String toString() {
-		return label + " : " + type;
-	}
+  @Override
+  public String toString() {
+    return label + " : " + type;
+  }
 }

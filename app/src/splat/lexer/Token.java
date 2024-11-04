@@ -32,6 +32,6 @@ public class Token {
   @Override
   public String toString() {
     return "Token = { lexeme=" + lexeme + ", line=" + line + ", column=" + column + ", value="
-        + value + " }";
+        + value + ": " + (value == null ? "null" : value.getClass()) + " }";
   }
 }
