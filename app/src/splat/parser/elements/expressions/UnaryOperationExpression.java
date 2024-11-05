@@ -26,9 +26,11 @@ public class UnaryOperationExpression extends Expression {
   }
 
   @Override
-  public Type analyzeAndGetType(Map<String, FunctionDeclaration> functionMap, Map<String, Type> variableAndParameterMap)
+  public Type analyzeAndGetType(Map<String, FunctionDeclaration> functionMap,
+      Map<String, Type> variableAndParameterMap)
       throws SemanticAnalysisException {
-    Type expressionType = expression.analyzeAndGetType(functionMap, variableAndParameterMap);
+    Type expressionType = expression.analyzeAndGetType(functionMap,
+        variableAndParameterMap);
 
     switch (operator) {
       case "not":

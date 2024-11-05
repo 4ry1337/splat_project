@@ -35,39 +35,42 @@ public class BinaryOperationExpression extends Expression {
   public Type analyzeAndGetType(Map<String, FunctionDeclaration> functionMap,
       Map<String, Type> variableAndParameterMap) throws SemanticAnalysisException {
     Type leftType = left.analyzeAndGetType(functionMap, variableAndParameterMap);
-    Type rightType = left.analyzeAndGetType(functionMap, variableAndParameterMap);
+    Type rightType = right.analyzeAndGetType(functionMap,
+        variableAndParameterMap);
+
     switch (operator) {
       case "+":
       case "-":
       case "*":
       case "/":
       case "%":
-        if (leftType != Type.INTEGER && rightType != Type.INTEGER) {
-          throw new SemanticAnalysisException("Invalid type.", this);
+        if (leftType == Type.INTEGER && rightType == Type.INTEGER) {
+          return Type.INTEGER;
         }
-        return Type.INTEGER;
+        break;
       case "and":
       case "or":
-        if (leftType != Type.INTEGER && rightType != Type.INTEGER) {
-          throw new SemanticAnalysisException("Invalid type.", this);
+        if (leftType == Type.BOOLEAN && rightType == Type.BOOLEAN) {
+          return Type.BOOLEAN;
         }
-        return Type.INTEGER;
+        break;
       case ">":
       case "<":
       case ">=":
       case "<=":
-        if (leftType != Type.INTEGER || rightType != Type.INTEGER) {
-          throw new SemanticAnalysisException("Invalid type.", this);
+        if (leftType == Type.INTEGER && rightType == Type.INTEGER) {
+          return Type.BOOLEAN;
         }
-        return Type.BOOLEAN;
+        break;
       case "==":
-        if (leftType != rightType) {
-          throw new SemanticAnalysisException("Equality operator requires operands of the same type.", this);
+        if (leftType == rightType) {
+          return Type.BOOLEAN;
         }
-        return Type.BOOLEAN;
+        break;
       default:
         throw new SemanticAnalysisException("Unexpected binary operator", this);
     }
+    throw new SemanticAnalysisException("Invalid type.", this);
   }
 
   @Override

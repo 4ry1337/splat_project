@@ -20,6 +20,7 @@ public class ExpressionStatement extends Statement {
     return expression;
   }
 
+  // TODO: check this
   @Override
   public void analyze(Map<String, FunctionDeclaration> functionMap, Map<String, Type> variableAndParameterMap)
       throws SemanticAnalysisException {

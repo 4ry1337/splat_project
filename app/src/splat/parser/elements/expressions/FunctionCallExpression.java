@@ -31,11 +31,13 @@ public class FunctionCallExpression extends Expression {
   @Override
   public Type analyzeAndGetType(Map<String, FunctionDeclaration> functionMap,
       Map<String, Type> variableAndParameterMap) throws SemanticAnalysisException {
+
     if (!functionMap.containsKey(label)) {
-      throw new SemanticAnalysisException("Function '" + label + "' is not defined.", this);
+      throw new SemanticAnalysisException("Function '" + label + "' not defined.", this);
     }
 
     FunctionDeclaration functionDeclaration = functionMap.get(label);
+
     List<Parameter> parameters = functionDeclaration.getParameters();
 
     if (parameters.size() != arguments.size()) {
@@ -44,22 +46,19 @@ public class FunctionCallExpression extends Expression {
           this);
     }
 
-    for (int i = 0; i < parameters.size(); i++) {
+    for (int i = 0; i < arguments.size(); i++) {
       Type paramType = parameters.get(i).getType();
-      Type argType = arguments.get(i).analyzeAndGetType(functionMap, variableAndParameterMap);
+
+      Type argType = arguments.get(i).analyzeAndGetType(functionMap,
+          variableAndParameterMap);
+
       if (paramType != argType) {
         throw new SemanticAnalysisException("Argument type mismatch for parameter '" + parameters.get(i).getLabel()
             + "'. Expected " + paramType + " but got " + argType + ".", this);
       }
     }
 
-    ReturnType returnType = functionDeclaration.getReturnType();
-    if (returnType == ReturnType.VOID) {
-      throw new SemanticAnalysisException(
-          "Function '" + label + "' cannot be used as an expression because it has a void return type.", this);
-    }
-
-    return returnType.getUnderlyingType();
+    return functionDeclaration.getReturnType().getUnderlyingType();
   }
 
   @Override
@@ -74,4 +73,5 @@ public class FunctionCallExpression extends Expression {
     result += ")";
     return result;
   }
+
 }

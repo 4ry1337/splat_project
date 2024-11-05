@@ -30,18 +30,15 @@ public class AssignmentStatement extends Statement {
   public void analyze(Map<String, FunctionDeclaration> functionMap, Map<String, Type> variableAndParameterMap)
       throws SemanticAnalysisException {
     if (!variableAndParameterMap.containsKey(label)) {
-      throw new SemanticAnalysisException("Variable '" + label + "' is not defined.", this);
+      throw new SemanticAnalysisException("Variable '" + label + "' not defined.", this);
     }
 
     Type variableType = variableAndParameterMap.get(label);
-
     Type expressionType = expression.analyzeAndGetType(functionMap, variableAndParameterMap);
 
     if (variableType != expressionType) {
       throw new SemanticAnalysisException(
-          "Type mismatch: Cannot assign " + expressionType + " to variable of type " +
-              variableType + ".",
-          this);
+          "Type mismatch: Cannot assign " + expressionType + " to variable of type " + variableType + ".", this);
     }
   }
 

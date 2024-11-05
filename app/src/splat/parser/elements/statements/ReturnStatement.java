@@ -16,28 +16,31 @@ public class ReturnStatement extends Statement {
     this.expression = expression;
   }
 
-  public Expression getExpression() {
-    return expression;
-  }
-
   @Override
   public void analyze(Map<String, FunctionDeclaration> functionMap, Map<String, Type> variableAndParameterMap)
       throws SemanticAnalysisException {
-    Type expectedReturnType = variableAndParameterMap.get("0result");
+    if (!variableAndParameterMap.containsKey("0")) {
+      throw new SemanticAnalysisException("Return statements are not allowed in the main program body", this);
+    }
+    Type expectedReturnType = variableAndParameterMap.get("0");
 
     if (expression != null) {
-      Type exprType = expression.analyzeAndGetType(functionMap, variableAndParameterMap);
+      Type expressionType = expression.analyzeAndGetType(functionMap, variableAndParameterMap);
 
-      if (expectedReturnType == null || exprType != expectedReturnType) {
-        throw new SemanticAnalysisException(
-            "Return type mismatch: Expected " + expectedReturnType + " but got " + exprType + ".", this);
+      if (expressionType != expectedReturnType) {
+        throw new SemanticAnalysisException("Return type mismatch: Expected " + expectedReturnType
+            + " but got " + expressionType + ".", this);
       }
     } else {
       if (expectedReturnType != null) {
-        throw new SemanticAnalysisException(
-            "Return statement missing an expression; expected return type is " + expectedReturnType + ".", this);
+        throw new SemanticAnalysisException("Return statement missing an expression; expected return type is "
+            + expectedReturnType + ".", this);
       }
     }
+  }
+
+  public Expression getExpression() {
+    return expression;
   }
 
   @Override

@@ -20,11 +20,14 @@ public class VariableExpression extends Expression {
   }
 
   @Override
-  public Type analyzeAndGetType(Map<String, FunctionDeclaration> functionMap, Map<String, Type> variableAndParameterMap)
+  public Type analyzeAndGetType(Map<String, FunctionDeclaration> functionMap,
+      Map<String, Type> variableAndParameterMap)
       throws SemanticAnalysisException {
+
     if (!variableAndParameterMap.containsKey(label)) {
-      throw new SemanticAnalysisException("Variable '" + label + "' is not defined.", this);
+      throw new SemanticAnalysisException("Variable '" + label + "' not defined.", this);
     }
+
     return variableAndParameterMap.get(label);
   }
 
@@ -32,4 +35,5 @@ public class VariableExpression extends Expression {
   public String toString() {
     return label;
   }
+
 }

@@ -36,16 +36,21 @@ public class IfStatement extends Statement {
   @Override
   public void analyze(Map<String, FunctionDeclaration> functionMap, Map<String, Type> variableAndParameterMap)
       throws SemanticAnalysisException {
+    // Check that the condition is a Boolean expression
     Type conditionType = condition.analyzeAndGetType(functionMap, variableAndParameterMap);
     if (conditionType != Type.BOOLEAN) {
-      throw new SemanticAnalysisException("If statement condition must be of type Boolean.", this);
+      throw new SemanticAnalysisException("If statement condition must be Boolean", getLine(), getColumn());
     }
-    for (Statement statement : thenBranch) {
-      statement.analyze(functionMap, variableAndParameterMap);
+
+    // Analyze the then branch
+    for (Statement stmt : thenBranch) {
+      stmt.analyze(functionMap, variableAndParameterMap);
     }
+
+    // Analyze the else branch if it exists
     if (elseBranch != null) {
-      for (Statement statement : elseBranch) {
-        statement.analyze(functionMap, variableAndParameterMap);
+      for (Statement stmt : elseBranch) {
+        stmt.analyze(functionMap, variableAndParameterMap);
       }
     }
   }

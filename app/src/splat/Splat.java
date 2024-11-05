@@ -20,10 +20,6 @@ public class Splat {
     Lexer lexer = new Lexer(progFile);
     List<Token> tokens = lexer.tokenize();
 
-    // for (Token token : tokens) {
-    // System.out.println(token);
-    // }
-
     // Step 2. Parse
     Parser parser = new Parser(tokens);
     ProgramAST progAST = parser.parse();

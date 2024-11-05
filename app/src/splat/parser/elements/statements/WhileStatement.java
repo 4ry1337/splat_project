@@ -3,10 +3,10 @@ package splat.parser.elements.statements;
 import java.util.List;
 import java.util.Map;
 
-import splat.lexer.*;
+import splat.lexer.Token;
 import splat.parser.elements.Type;
 import splat.parser.elements.declarations.FunctionDeclaration;
-import splat.parser.elements.expressions.*;
+import splat.parser.elements.expressions.Expression;
 import splat.semanticanalyzer.SemanticAnalysisException;
 
 public class WhileStatement extends Statement {
@@ -30,10 +30,11 @@ public class WhileStatement extends Statement {
   @Override
   public void analyze(Map<String, FunctionDeclaration> functionMap, Map<String, Type> variableAndParameterMap)
       throws SemanticAnalysisException {
-    Type conditionType = condition.analyzeAndGetType(functionMap, variableAndParameterMap);
+    Type conditionType = condition.analyzeAndGetType(functionMap,
+        variableAndParameterMap);
 
     if (conditionType != Type.BOOLEAN) {
-      throw new SemanticAnalysisException("Condition of while loop must be of type Boolean.", this);
+      throw new SemanticAnalysisException("Condition of while loop must be Boolean.", this);
     }
 
     for (Statement statement : body) {

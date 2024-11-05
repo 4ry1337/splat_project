@@ -22,8 +22,8 @@ public class LiteralExpression extends Expression {
   }
 
   @Override
-  public Type analyzeAndGetType(Map<String, FunctionDeclaration> functionMap, Map<String, Type> variableAndParameterMap)
-      throws SemanticAnalysisException {
+  public Type analyzeAndGetType(Map<String, FunctionDeclaration> functionMap,
+      Map<String, Type> variableAndParameterMap) throws SemanticAnalysisException {
     if (value instanceof Integer) {
       return Type.INTEGER;
     } else if (value instanceof Boolean) {
@@ -31,7 +31,7 @@ public class LiteralExpression extends Expression {
     } else if (value instanceof String) {
       return Type.STRING;
     } else {
-      throw new SemanticAnalysisException("Unsupported literal type.", this);
+      throw new SemanticAnalysisException("Unsupported literal type: " + value.getClass().getSimpleName(), this);
     }
   }
 
