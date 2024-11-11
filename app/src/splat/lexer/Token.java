@@ -1,12 +1,14 @@
 package splat.lexer;
 
+import splat.elements.Value;
+
 public class Token {
   private final String lexeme;
-  private final Object value;
+  private final Value value;
   private final int line;
   private final int column;
 
-  public Token(String lexeme, Object value, int line, int column) {
+  public Token(String lexeme, Value value, int line, int column) {
     this.lexeme = lexeme;
     this.line = line;
     this.column = column;
@@ -25,7 +27,7 @@ public class Token {
     return column;
   }
 
-  public Object getValue() {
+  public Value getValue() {
     return value;
   }
 

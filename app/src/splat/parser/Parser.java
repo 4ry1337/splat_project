@@ -5,10 +5,10 @@ import java.util.List;
 
 import splat.Utils;
 import splat.lexer.*;
-import splat.parser.elements.*;
-import splat.parser.elements.declarations.*;
-import splat.parser.elements.statements.*;
-import splat.parser.elements.expressions.*;
+import splat.elements.*;
+import splat.elements.declarations.*;
+import splat.elements.statements.*;
+import splat.elements.expressions.*;
 
 public class Parser {
   private List<Token> tokens;
@@ -48,10 +48,8 @@ public class Parser {
       List<Statement> statements = parseStatements();
       checkNext("end");
       checkNext(";");
-      ProgramAST programAST = new ProgramAST(declarations, statements, startToken);
-      // System.out.println(programAST);
-      return programAST;
-    } catch (IndexOutOfBoundsException ex) {
+      return new ProgramAST(declarations, statements, startToken);
+    } catch (IndexOutOfBoundsException e) {
       throw new ParseException("Unexpectedly reached the end of file.", -1, -1);
     }
   }
@@ -86,7 +84,7 @@ public class Parser {
   /*
    * <var-decl> ::= <label> : <type> ;
    */
-  private VariableDeclaration parseVariableDeclaration() throws ParseException {
+  private Variable parseVariableDeclaration() throws ParseException {
     Token labelToken = tokens.remove(0);
     if (!Utils.isLabel(labelToken.getLexeme())) {
       throw new ParseException("Invalid variable label: " + labelToken.getLexeme(), labelToken);
@@ -97,7 +95,7 @@ public class Parser {
       throw new ParseException("Unexpected variable type: " + typeToken.getLexeme(), typeToken);
     }
     checkNext(";");
-    return new VariableDeclaration(labelToken, Type.fromString(typeToken.getLexeme()));
+    return new Variable(labelToken, Type.fromString(typeToken.getLexeme()));
   }
 
   /*
@@ -105,7 +103,7 @@ public class Parser {
    * is <loc-var-decls>
    * begin <stmts> end ;
    */
-  private FunctionDeclaration parseFunctionDeclaration() throws ParseException {
+  private Function parseFunctionDeclaration() throws ParseException {
     Token labelToken = tokens.remove(0);
     if (!Utils.isLabel(labelToken.getLexeme())) {
       throw new ParseException("Invalid function label: " + labelToken.getLexeme(), labelToken);
@@ -117,12 +115,12 @@ public class Parser {
     Token returnTypeToken = tokens.remove(0);
     ReturnType returnType = ReturnType.fromString(returnTypeToken.getLexeme());
     checkNext("is");
-    List<VariableDeclaration> local_variable_declarations = parseLocalVariableDeclarations();
+    List<Variable> local_variable_declarations = parseLocalVariableDeclarations();
     checkNext("begin");
     List<Statement> body = parseStatements();
     checkNext("end");
     checkNext(";");
-    return new FunctionDeclaration(labelToken, parameters, returnType, local_variable_declarations,
+    return new Function(labelToken, parameters, returnType, local_variable_declarations,
         body);
   }
 
@@ -160,8 +158,8 @@ public class Parser {
   /*
    * <local-var-decls> ::= ( <var-decl> )*
    */
-  private List<VariableDeclaration> parseLocalVariableDeclarations() throws ParseException {
-    List<VariableDeclaration> local_variable_declarations = new ArrayList<>();
+  private List<Variable> parseLocalVariableDeclarations() throws ParseException {
+    List<Variable> local_variable_declarations = new ArrayList<>();
     while (!peekNext("begin")) {
       local_variable_declarations.add(parseVariableDeclaration());
     }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import splat.Utils;
+import splat.elements.values.*;
 
 public class Lexer {
   private final File file;
@@ -126,27 +127,27 @@ public class Lexer {
             }
             curr_id++;
             tokens.add(new Token(source.substring(start_id, curr_id),
-                String.valueOf(source.substring(start_id + 1, curr_id - 1)), line, column));
+                new StringValue(String.valueOf(source.substring(start_id + 1, curr_id - 1))), line, column));
             column += curr_id - start_id;
             break;
           default:
-            if (isDigit(ch)) {
-              while (curr_id < source.length() && isDigit(source.charAt(curr_id))) {
+            if (Utils.isDigit(ch)) {
+              while (curr_id < source.length() && Utils.isDigit(source.charAt(curr_id))) {
                 curr_id++;
               }
               tokens.add(new Token(source.substring(start_id, curr_id),
-                  Integer.valueOf(source.substring(start_id, curr_id)), line, column));
+                  new IntegerValue(Integer.valueOf(source.substring(start_id, curr_id))), line, column));
               column += curr_id - start_id;
-            } else if (isAlpha(ch)) {
-              while (curr_id < source.length() && isAlphaNumeric(source.charAt(curr_id))) {
+            } else if (Utils.isAlpha(ch)) {
+              while (curr_id < source.length() && Utils.isAlphaNumeric(source.charAt(curr_id))) {
                 curr_id++;
               }
               String lexeme = source.substring(start_id, curr_id);
               if (Utils.isKeyword(lexeme)) {
                 if (Utils.isBoolean(lexeme)) {
-                  tokens.add(new Token(lexeme, Boolean.valueOf(lexeme), line, column));
+                  tokens.add(new Token(lexeme, new BooleanValue(Boolean.valueOf(lexeme)), line, column));
                 } else {
-                  tokens.add(new Token(lexeme, lexeme, line, column));
+                  tokens.add(new Token(lexeme, new StringValue(lexeme), line, column));
                 }
               } else {
                 tokens.add(new Token(lexeme, null, line, column));
@@ -162,17 +163,5 @@ public class Lexer {
     }
 
     return tokens;
-  }
-
-  private boolean isAlphaNumeric(char c) {
-    return isAlpha(c) || isDigit(c);
-  }
-
-  private boolean isAlpha(char ch) {
-    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_';
-  }
-
-  private boolean isDigit(char c) {
-    return c >= '0' && c <= '9';
   }
 }

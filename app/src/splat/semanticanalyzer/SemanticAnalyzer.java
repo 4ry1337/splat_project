@@ -6,60 +6,41 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import splat.parser.elements.ProgramAST;
-import splat.parser.elements.ReturnType;
-import splat.parser.elements.Type;
-import splat.parser.elements.declarations.Declaration;
-import splat.parser.elements.declarations.FunctionDeclaration;
-import splat.parser.elements.declarations.Parameter;
-import splat.parser.elements.declarations.VariableDeclaration;
-import splat.parser.elements.statements.IfStatement;
-import splat.parser.elements.statements.ReturnStatement;
-import splat.parser.elements.statements.Statement;
+import splat.elements.*;
+import splat.elements.declarations.*;
+import splat.elements.statements.*;
 
 public class SemanticAnalyzer {
 
   private ProgramAST progAST;
-  private Map<String, FunctionDeclaration> functionMap = new HashMap<>();
-  private Map<String, Type> progamVariableMap = new HashMap<>();
+  private Map<String, Function> functionMap;
+  private Map<String, Type> progamVariableMap;
 
   public SemanticAnalyzer(ProgramAST progAST) {
     this.progAST = progAST;
   }
 
   public void analyze() throws SemanticAnalysisException {
-    // Checks to make sure we don't use the same labels more than once
-    // for our program functions and variables
     checkNoDuplicateProgamLabels();
 
-    // This sets the maps that will be needed later when we need to
-    // typecheck variable references and function calls in the
-    // program body
     setProgamVariableAndFunctionMaps();
 
-    // Perform semantic analysis on the functions
-    for (FunctionDeclaration functionDeclaration : functionMap.values()) {
+    for (Function functionDeclaration : functionMap.values()) {
       analyzeFunctionDeclaration(functionDeclaration);
     }
 
-    // Perform semantic analysis on the program body
     for (Statement statement : progAST.getStatements()) {
       statement.analyze(functionMap, progamVariableMap);
     }
   }
 
-  private void analyzeFunctionDeclaration(FunctionDeclaration functionDeclaration) throws SemanticAnalysisException {
-    // Checks to make sure we don't use the same labels more than once
-    // among our function parameters, local variables, and function names
+  private void analyzeFunctionDeclaration(Function functionDeclaration) throws SemanticAnalysisException {
     checkNoDuplicateFunctionLabels(functionDeclaration);
 
-    // Get the types of the parameters and local variables
     Map<String, Type> variableAndParameterMap = getVariableAndParameterMap(functionDeclaration);
 
-    // Add the function's return type to the map under a unique key
     variableAndParameterMap.put("0", functionDeclaration.getReturnType().getUnderlyingType());
 
-    // Perform semantic analysis on the function body
     List<Statement> body = functionDeclaration.getStatements();
 
     if (functionDeclaration.getReturnType() != ReturnType.VOID && !isExprReturnTerminated(body)) {
@@ -82,34 +63,30 @@ public class SemanticAnalyzer {
       return true;
     } else if (lastStatement instanceof IfStatement) {
       IfStatement ifStatement = (IfStatement) lastStatement;
-      // Ensure both branches are expr-return-terminated
       return isExprReturnTerminated(ifStatement.getThenBranch())
           && (ifStatement.getElseBranch() != null && isExprReturnTerminated(ifStatement.getElseBranch()));
     }
     return false;
   }
 
-  private Map<String, Type> getVariableAndParameterMap(FunctionDeclaration functionDeclaration) {
+  private Map<String, Type> getVariableAndParameterMap(Function functionDeclaration) {
     Map<String, Type> variableAndParameterMap = new HashMap<>();
 
-    // Add parameters
     for (Parameter param : functionDeclaration.getParameters()) {
       variableAndParameterMap.put(param.getLabel(), param.getType());
     }
 
-    // Add local variables
-    for (VariableDeclaration localVariable : functionDeclaration.getLocalVariables()) {
+    for (Variable localVariable : functionDeclaration.getLocalVariables()) {
       variableAndParameterMap.put(localVariable.getLabel(), localVariable.getType());
     }
 
     return variableAndParameterMap;
   }
 
-  private void checkNoDuplicateFunctionLabels(FunctionDeclaration functionDeclaration)
+  private void checkNoDuplicateFunctionLabels(Function functionDeclaration)
       throws SemanticAnalysisException {
     Set<String> labels = new HashSet<>();
 
-    // Check parameters
     for (Parameter parameter : functionDeclaration.getParameters()) {
       if (labels.contains(parameter.getLabel())) {
         throw new SemanticAnalysisException("Duplicate parameter label '" + parameter.getLabel()
@@ -122,8 +99,7 @@ public class SemanticAnalyzer {
       labels.add(parameter.getLabel());
     }
 
-    // Check local variables
-    for (VariableDeclaration localVariable : functionDeclaration.getLocalVariables()) {
+    for (Variable localVariable : functionDeclaration.getLocalVariables()) {
       if (labels.contains(localVariable.getLabel())) {
         throw new SemanticAnalysisException("Duplicate local variable label '" + localVariable.getLabel()
             + "' in function '" + functionDeclaration.getLabel() + "'", functionDeclaration);
@@ -135,7 +111,6 @@ public class SemanticAnalyzer {
       labels.add(localVariable.getLabel());
     }
 
-    // Check function label
     if (labels.contains(functionDeclaration.getLabel())) {
       throw new SemanticAnalysisException("Function label conflicts with a parameter or local variable in function '"
           + functionDeclaration.getLabel() + "'", functionDeclaration);
@@ -158,14 +133,16 @@ public class SemanticAnalyzer {
   }
 
   private void setProgamVariableAndFunctionMaps() {
+    functionMap = new HashMap<>();
+    progamVariableMap = new HashMap<>();
     for (Declaration declaration : progAST.getDeclarations()) {
       String label = declaration.getLabel();
-      if (declaration instanceof FunctionDeclaration) {
-        FunctionDeclaration functionDeclaration = (FunctionDeclaration) declaration;
+      if (declaration instanceof Function) {
+        Function functionDeclaration = (Function) declaration;
         functionMap.put(label, functionDeclaration);
 
-      } else if (declaration instanceof VariableDeclaration) {
-        VariableDeclaration variableDeclaration = (VariableDeclaration) declaration;
+      } else if (declaration instanceof Variable) {
+        Variable variableDeclaration = (Variable) declaration;
         progamVariableMap.put(label, variableDeclaration.getType());
       }
     }

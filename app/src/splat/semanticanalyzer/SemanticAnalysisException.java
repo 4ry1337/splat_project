@@ -1,7 +1,7 @@
 package splat.semanticanalyzer;
 
 import splat.SplatException;
-import splat.parser.elements.ASTElement;
+import splat.elements.ASTElement;
 
 public class SemanticAnalysisException extends SplatException {
   public SemanticAnalysisException(String msg, ASTElement elem) {

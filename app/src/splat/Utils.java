@@ -46,4 +46,16 @@ public class Utils {
   public static boolean isLiteral(Object literal) {
     return literal != null;
   }
+
+  public static boolean isAlphaNumeric(char c) {
+    return isAlpha(c) || isDigit(c);
+  }
+
+  public static boolean isAlpha(char ch) {
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_';
+  }
+
+  public static boolean isDigit(char c) {
+    return c >= '0' && c <= '9';
+  }
 }

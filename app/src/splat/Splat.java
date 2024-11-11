@@ -3,10 +3,11 @@ package splat;
 import java.io.File;
 import java.util.List;
 
+import splat.elements.*;
 import splat.lexer.*;
 import splat.parser.*;
-import splat.parser.elements.*;
-import splat.semanticanalyzer.SemanticAnalyzer;
+import splat.semanticanalyzer.*;
+import splat.executor.*;
 
 public class Splat {
   private File progFile;
@@ -22,15 +23,15 @@ public class Splat {
 
     // Step 2. Parse
     Parser parser = new Parser(tokens);
-    ProgramAST progAST = parser.parse();
+    ProgramAST progam = parser.parse();
 
     // Step 3. Semantic Analysis
-    SemanticAnalyzer analyzer = new SemanticAnalyzer(progAST);
+    SemanticAnalyzer analyzer = new SemanticAnalyzer(progam);
     analyzer.analyze();
 
     // Step 4. Executor
-    // Executor executor = new Executor(progAST);
-    // executor.runProgram();
+    Executor executor = new Executor(progam);
+    executor.runProgram();
 
     // THE END!
   }
