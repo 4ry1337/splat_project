@@ -1,7 +1,0 @@
-program
-
-begin
-	if ((-a) <= (c/4)) then
-		a := "good";
-	end if;
-end;

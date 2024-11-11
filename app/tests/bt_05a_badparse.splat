@@ -1,4 +1,0 @@
-the following is not a variable
-123name
-but rather an integer constant followed by a variable
-this will fail during parsing however
